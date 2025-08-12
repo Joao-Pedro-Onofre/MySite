@@ -83,23 +83,22 @@ nav > ul > li > a {
   position: relative;
   display: block;
   width: 180px;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding: 20px 0;
 }
 
 .main-menu > ul > li > a {
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.7);
+  color: #999;
   font-size: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 15px 20px;
+  padding: 15px 20px;      /* keep the roomier version */
   margin: 5px 15px;
   border-radius: 12px;
+  transition: all .3s cubic-bezier(0.4,0,0.2,1);
   position: relative;
   overflow: hidden;
+  text-decoration: none;
 }
 
 .main-menu > ul > li > a::before {
@@ -121,18 +120,6 @@ nav > ul > li > a {
   padding-bottom: 20px;
 }
 
-.main-menu > ul > li > a {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  color:#999;
-  font-size: 1rem;
-  transition:all .1s linear;
-  -webkit-transition:all .1s linear;
-  padding: 10px 0;
-}
-
 .main-menu li:hover > a, .main-menu li.active > a, .main-menu li > a:focus {
   text-decoration: none;
   color: #fff;
@@ -140,6 +127,22 @@ nav > ul > li > a {
   backdrop-filter: blur(10px);
   transform: translateX(5px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Strong, visible focus (keyboard) */
+.main-menu a:focus-visible,
+.card a:focus-visible,
+.footer-menu a:focus-visible,
+.contact-list a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  .glass-section { animation: none; }
 }
 
 .main-menu li:hover > a::before {
@@ -162,6 +165,9 @@ nav > ul > li > a {
   border-radius: 1rem;
   padding: 4px;
   width: 300px;
+
+  margin-left: auto;
+  margin-right: auto;
 
   /* Glow effect */
   box-shadow:
@@ -243,7 +249,7 @@ nav > ul > li > a {
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .glass-section {
-    margin: 30px 10px 30px 10px; /* Remove left margin on mobile */
+    margin: 30px 10px;
     border-radius: 16px;
   }
   
@@ -254,10 +260,7 @@ nav > ul > li > a {
   }
   
   .main-menu {
-    width: 100%;
-    height: auto;
-    position: relative;
-    padding-top: 20px;
+    display: none;
   }
   
   .main-menu > ul {
@@ -270,9 +273,34 @@ nav > ul > li > a {
     width: auto;
     padding: 10px;
   }
+
+  /* Footer socials */
+  .footer .social {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    width: 100%;
+    text-align: center;
+  }
+
+  .footer .social a {
+    margin: 0; /* rely on the gap above */
+  }
+  
 }
 
 /* Modern Card System - Dark Glass Like Sidebar */
+
+.card.h-100{              /* or just .card if you prefer */
+  display: flex;
+}
+.card.h-100 .card-body{
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;           /* tidy spacing */
+}
 .card {
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(20px);
@@ -306,8 +334,35 @@ nav > ul > li > a {
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
+.card-text a{
+  position: relative;
+  text-decoration:none;
+  color:#ccc;
+}
+.card-text a::before{
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  border-radius: 2px;
+  background-color: #fff;
+  bottom: 0;
+  left: 0;
+  transform-origin: right;
+  transform: scaleX(0);
+  transition: transform .3s ease-in-out;
+}
+.card-text a:hover{
+  color: #fff;
+}
+.card-text a:hover::before{
+  transform-origin: left;
+  transform: scaleX(1);
+}
+
 .card-body > .card-text {
 	color: white;
+  flex: 1;
 }
 
 .card-body > .card-text > .project-text {
@@ -316,6 +371,27 @@ nav > ul > li > a {
 
 .card-body > .card-text > .project-title{
 	font-weight: 800;
+}
+
+/* Keep all project images the same height & proportion */
+.card-image {
+  aspect-ratio: 16/9;      /* or 4/3, 1/1 depending on look you want */
+  overflow: hidden;
+  border-radius: 0.75rem;  /* match your design */
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;       /* crops the excess without stretching */
+  display: block;
+}
+
+.card-body .card-tags{
+  margin-top: auto;       /* sticks this block to the bottom */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .card-tags > .badge {
@@ -678,5 +754,14 @@ h1, h2, h3, h4, h5, h6 {
   .site-footer{ padding-top:36px; }
   .social-list{ justify-content:center; margin-bottom:10px; }
   .footer-heading{ text-align:center; }
+  .footer-heading.custom-h3::after {
+    left: 50%;                                      /* center the underline */
+    transform: translateX(-50%);                    /* shift back by half width */
+    width: 32%;
+  }
   .contact-list{ justify-items:center; }
+
+  .masthead h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+  }
 }
