@@ -3,10 +3,9 @@
 # =========================
 FROM php:8.3-fpm-alpine AS build
 
-# Allow composer as root inside Docker
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# System deps & PHP extensions needed by Laravel
+# System deps & PHP extensions
 RUN apk add --no-cache git unzip libzip-dev oniguruma-dev icu-dev \
     && docker-php-ext-install pdo_mysql mbstring zip intl
 
@@ -15,17 +14,17 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-# 1) Install PHP deps WITHOUT scripts (so artisan isn't required yet)
+# 1) Install deps without scripts (no artisan needed yet)
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --prefer-dist --no-progress --no-scripts
 
-# 2) Now copy the whole app so artisan exists
+# 2) Copy full app (artisan now exists)
 COPY . ./
 
-# 3) Run composer install again (fast due to cache) to execute post-scripts
+# 3) Run install again to execute scripts (fast due to cache)
 RUN composer install --no-dev --no-interaction --prefer-dist --no-progress
 
-# (optional) clear dev caches
+# optional: clear any dev caches
 RUN php artisan config:clear || true && php artisan route:clear || true
 
 
@@ -39,11 +38,11 @@ RUN apk add --no-cache \
       nginx \
       php83-fpm php83-opcache php83-session php83-pdo_mysql php83-mbstring php83-zip php83-intl php83-xml php83-curl \
       supervisor bash ca-certificates envsubst \
-  # create runtime dirs and fix perms for unprivileged user
   && mkdir -p /run/nginx /var/log/supervisor /var/log/nginx /var/lib/nginx /etc/nginx \
-  && chown -R nobody:nogroup /run/nginx /var/log/nginx /var/lib/nginx /var/log/supervisor
+  # 👇 give the unprivileged user permission to write required dirs, including /etc/nginx
+  && chown -R nobody:nogroup /run/nginx /var/log/nginx /var/lib/nginx /var/log/supervisor /etc/nginx
 
-# Bring in the built app
+# Bring in built app
 COPY --from=build /app /app
 
 # Configs + entrypoint
@@ -56,11 +55,9 @@ RUN chmod +x /entrypoint.sh \
     && chown -R nobody:nogroup /app /app/storage /app/bootstrap/cache
 
 WORKDIR /app
-
-# Run as unprivileged user
 USER nobody
 
-# Render will set $PORT; nginx will listen on it (templated in entrypoint)
+# Render sets $PORT; nginx will listen on it (templated in entrypoint)
 EXPOSE 10000
 
 ENTRYPOINT ["/entrypoint.sh"]
