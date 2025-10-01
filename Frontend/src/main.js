@@ -1,6 +1,9 @@
 // src/main.js
 import { createApp } from 'vue'
 import App from './App.vue'
+// Now import YOUR global CSS (bundled by Vite)
+import './styles/styles.css'
+import './styles/MyStyles.css'
 
 /* -------------------------------------------------
    Small helpers to inject CDN assets
@@ -63,10 +66,6 @@ await Promise.all([
 	loadStyle(CDN.gfVarela),
 	loadStyle(CDN.gfNunito),
 ])
-
-// Now import YOUR global CSS (bundled by Vite)
-import './styles/styles.css'
-import './styles/MyStyles.css'
 
 /* -------------------------------------------------
    Create & mount the Vue app
