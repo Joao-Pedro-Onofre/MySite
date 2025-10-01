@@ -2,8 +2,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 // Now import YOUR global CSS (bundled by Vite)
-import './styles/styles.css'
 import './styles/MyStyles.css'
+import './styles/styles.css'
 
 /* -------------------------------------------------
    Small helpers to inject CDN assets
