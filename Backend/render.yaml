@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: laravel-backend
+    plan: free
+    env: docker
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://<your-service>.onrender.com
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: CACHE_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      # mail settings (fill these in Render → Environment as secrets)
+      - key: MAIL_MAILER
+        value: smtp
+      - key: MAIL_HOST
+        value: <smtp-host>
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_ENCRYPTION
+        value: tls
+      - key: MAIL_FROM_ADDRESS
+        value: noreply@yourdomain.com
+      - key: MAIL_FROM_NAME
+        value: Your App
