@@ -31,10 +31,10 @@ RUN apk add --no-cache \
       php83-pdo_mysql php83-mbstring php83-zip php83-intl php83-xml php83-curl \
       php83-openssl php83-fileinfo \
       supervisor bash ca-certificates envsubst \
-  && mkdir -p /run/nginx /var/log/supervisor /var/log/nginx /var/lib/nginx /etc/nginx /run/php \
-  && chown -R nobody:nogroup /run/nginx /var/log/nginx /var/lib/nginx /var/log/supervisor /etc/nginx /run/php \
-  # make php-fpm listen on unix socket
-  && sed -i 's|^listen = .*|listen = /run/php/php-fpm.sock|' /etc/php83/php-fpm.d/www.conf
+  && mkdir -p /run/nginx /var/log/supervisor /var/log/nginx /var/lib/nginx /etc/nginx \
+  && chown -R nobody:nogroup /run/nginx /var/log/nginx /var/lib/nginx /var/log/supervisor /etc/nginx
+# ⬆️  note: no "sed ... listen = /run/php/php-fpm.sock"
+
 
 # app files
 COPY --from=build /app /app

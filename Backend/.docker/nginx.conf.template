@@ -30,10 +30,11 @@ http {
       include fastcgi_params;
       fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
       fastcgi_index index.php;
-      fastcgi_pass unix:/run/php/php-fpm.sock;   # <— MUST match Dockerfile sed path
+      fastcgi_pass 127.0.0.1:9000;   # <<< use TCP
       fastcgi_read_timeout 120s;
       fastcgi_intercept_errors on;
     }
+
 
     location ~* \.(?:css|js|jpg|jpeg|gif|png|svg|ico|woff2?)$ {
       expires 7d;
