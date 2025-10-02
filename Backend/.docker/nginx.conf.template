@@ -29,5 +29,19 @@ http {
       access_log off;
       try_files $uri =404;
     }
+
+      # --- CORS (allow your Vercel site) ---
+      set $cors_allowed_origin 'https://joao-onofre.vercel.app';
+      add_header 'Access-Control-Allow-Origin' $cors_allowed_origin always;
+      add_header 'Vary' 'Origin' always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+      add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, X-Requested-With' always;
+      add_header 'Access-Control-Max-Age' '600' always;
+
+      # Preflight short-circuit
+      if ($request_method = OPTIONS) {
+        return 204;
+      }
+
   }
 }
