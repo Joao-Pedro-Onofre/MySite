@@ -19,9 +19,8 @@ class EmailController extends Controller
             'message' => ['required', 'string', 'max: 5000'],
         ]);
 
-        $msg = Email::create($data);
-        Mail::to(env('CONTACT_NOTIFY_TO'))->send(new ContactNotification($msg));
+        Mail::to(config('mail.contact_to'))->send(new ContactNotification($data));
 
-        return response()->json($msg, 201);
+        return response()->json(['ok' => true], 201);
     }
 }

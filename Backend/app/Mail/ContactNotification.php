@@ -13,20 +13,21 @@ use Illuminate\Queue\SerializesModels;
 class ContactNotification extends Mailable
 {
     use Queueable, SerializesModels;
+    public array $payload;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public Email $messageModel)
+    public function __construct(array $payload)
     {
-        //
+        $this->payload = $payload;
     }
 
     public function build()
     {
-        return $this->subject('New contact form submission')
-            ->replyTo($this->messageModel->address, $this->messageModel->name)
-            ->markdown('mail.contact_notification', ['m' => $this->messageModel]);
+        return $this->subject($this->payload['subject'])
+            ->from(config('mail.from.address'), config('mail.from.name'))
+            ->view('emails.contact');
     }
 
     /**

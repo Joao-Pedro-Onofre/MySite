@@ -13,6 +13,7 @@ return [
     | "mailers" array. Examples of each type of mailer are provided.
     |
     */
+    'contact_to' => env('CONTACT_NOTIFY_TO'),
 
     'default' => env('MAIL_MAILER', 'log'),
 
