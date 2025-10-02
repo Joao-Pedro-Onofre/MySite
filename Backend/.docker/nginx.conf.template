@@ -5,13 +5,22 @@ http {
   include       /etc/nginx/mime.types;
   default_type  application/octet-stream;
   sendfile on;
-  keepalive_timeout  65;
+  keepalive_timeout 65;
 
   server {
     listen ${PORT};
     server_name _;
     root /app/public;
     index index.php index.html;
+
+    # --- CORS (allow your FE) ---
+    set $cors_allowed_origin 'https://joao-onofre.vercel.app';
+    add_header 'Access-Control-Allow-Origin' $cors_allowed_origin always;
+    add_header 'Vary' 'Origin' always;
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+    add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, X-Requested-With' always;
+    add_header 'Access-Control-Max-Age' '600' always;
+    if ($request_method = OPTIONS) { return 204; }
 
     location / {
       try_files $uri $uri/ /index.php?$query_string;
@@ -21,7 +30,7 @@ http {
       include fastcgi_params;
       fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
       fastcgi_index index.php;
-      fastcgi_pass unix:/run/php/php-fpm.sock;   # <<< use socket
+      fastcgi_pass unix:/run/php/php-fpm.sock;   # <— MUST match Dockerfile sed path
       fastcgi_read_timeout 120s;
       fastcgi_intercept_errors on;
     }
@@ -31,19 +40,5 @@ http {
       access_log off;
       try_files $uri =404;
     }
-
-      # --- CORS (allow your Vercel site) ---
-      set $cors_allowed_origin 'https://joao-onofre.vercel.app';
-      add_header 'Access-Control-Allow-Origin' $cors_allowed_origin always;
-      add_header 'Vary' 'Origin' always;
-      add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
-      add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, X-Requested-With' always;
-      add_header 'Access-Control-Max-Age' '600' always;
-
-      # Preflight short-circuit
-      if ($request_method = OPTIONS) {
-        return 204;
-      }
-
   }
 }
