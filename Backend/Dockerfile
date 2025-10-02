@@ -34,13 +34,16 @@ RUN php artisan config:clear || true && php artisan route:clear || true
 FROM alpine:3.20
 
 # Nginx + PHP-FPM + supervisor + helpers
+# --- Runtime stage (only this apk line needs updating) ---
 RUN apk add --no-cache \
       nginx \
-      php83-fpm php83-opcache php83-session php83-pdo_mysql php83-mbstring php83-zip php83-intl php83-xml php83-curl \
+      php83-fpm php83-opcache php83-session \
+      php83-pdo_mysql php83-mbstring php83-zip php83-intl php83-xml php83-curl \
+      php83-openssl php83-fileinfo \
       supervisor bash ca-certificates envsubst \
   && mkdir -p /run/nginx /var/log/supervisor /var/log/nginx /var/lib/nginx /etc/nginx \
-  # 👇 give the unprivileged user permission to write required dirs, including /etc/nginx
   && chown -R nobody:nogroup /run/nginx /var/log/nginx /var/lib/nginx /var/log/supervisor /etc/nginx
+
 
 # Bring in built app
 COPY --from=build /app /app
