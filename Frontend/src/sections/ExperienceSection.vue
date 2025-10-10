@@ -4,19 +4,44 @@
 			<h2 class="custom-h2 text-white mb-4">Experience</h2>
 
 			<!-- Tabs -->
-			<div class="nav nav-tabs" role="tablist">
-				<button class="nav-link" :class="{ active: tab === 'education' }" @click="tab = 'education'" type="button">
-					<i class="fa-solid fa-graduation-cap"></i> Education
-				</button>
-				<button class="nav-link" :class="{ active: tab === 'professional' }" @click="tab = 'professional'" type="button">
-					<i class="fa-solid fa-briefcase"></i> Professional
-				</button>
-			</div>
+			<ul class="nav nav-tabs" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button
+						class="nav-link active"
+						id="education-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#education-pane"
+						type="button"
+						role="tab"
+						aria-controls="education-pane"
+						aria-selected="true">
+						<i class="fa-solid fa-graduation-cap"></i> Education
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button
+						class="nav-link"
+						id="professional-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#professional-pane"
+						type="button"
+						role="tab"
+						aria-controls="professional-pane"
+						aria-selected="false">
+						<i class="fa-solid fa-briefcase"></i> Professional
+					</button>
+				</li>
+			</ul>
 
 			<!-- Panels -->
 			<div class="tab-content mt-4">
 				<!-- Education -->
-				<div v-show="tab === 'education'" class="tab-pane fade show active">
+				<div
+					class="tab-pane fade show active"
+					id="education-pane"
+					role="tabpanel"
+					aria-labelledby="education-tab"
+					tabindex="0">
 					<ExpCard
 						v-for="(item, i) in education"
 						:key="`edu-${i}`"
@@ -28,22 +53,20 @@
 				</div>
 
 				<!-- Professional -->
-				<div v-show="tab === 'professional'" class="tab-pane fade">
-					<template v-if="professional.length">
-						<ExpCard
-							v-for="(item, i) in professional"
-							:key="`pro-${i}`"
-							:time="item.time"
-							:title="item.title"
-							:course="item.course"
-							:points="item.points"
-							:tags="item.tags" />
-					</template>
-					<template v-else>
-						<div class="exp-card">
-							<div class="exp-header"><span class="exp-time">None (Yet)</span></div>
-						</div>
-					</template>
+				<div
+					class="tab-pane fade"
+					id="professional-pane"
+					role="tabpanel"
+					aria-labelledby="professional-tab"
+					tabindex="0">
+					<ExpCard
+						v-for="(item, i) in professional"
+						:key="`pro-${i}`"
+						:time="item.time"
+						:title="item.title"
+						:course="item.course"
+						:points="item.points"
+						:tags="item.tags" />
 				</div>
 			</div>
 		</div>
@@ -51,11 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import ExpCard from '@/components/ExpCard.vue'
-
-type TabKey = 'education' | 'professional'
-const tab = ref<TabKey>('education')
 
 type ExpItem = {
 	time: string
@@ -107,6 +126,16 @@ const education: ExpItem[] = [
 	}
 ]
 
-// Fill this when you have roles
-const professional: ExpItem[] = []
+const professional: ExpItem[] = [
+	{
+		time: '2021 (3 Months)',
+		title: 'Internship at Trigénius',
+		course: 'Web Development Department',
+		points: [
+			'Developed Trigénius Website',
+			'Helped design team make decisions',
+		],
+		tags: ['HTML', 'CSS', 'JavaScript', 'Laravel', 'PyroCMS', 'Twig', 'JQuery', 'MySQL', 'Prestashop']
+	}
+]
 </script>
