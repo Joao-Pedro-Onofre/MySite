@@ -3,8 +3,8 @@
 		<div class="container px-4 px-lg-5">
 			<h2 class="custom-h2 text-white mb-4">Experience</h2>
 
-			<!-- Tabs -->
-			<ul class="nav nav-tabs" role="tablist">
+			<!-- Tabs (Bootstrap handles active classes/ARIA) -->
+			<ul class="nav nav-tabs" role="tablist" id="exp-tabs">
 				<li class="nav-item" role="presentation">
 					<button
 						class="nav-link active"
@@ -37,36 +37,28 @@
 			<div class="tab-content mt-4">
 				<!-- Education -->
 				<div
-					class="tab-pane fade show active"
+					class="tab-pane show"
 					id="education-pane"
 					role="tabpanel"
 					aria-labelledby="education-tab"
-					tabindex="0">
+					v-if="activeTab === 'education'">
 					<ExpCard
 						v-for="(item, i) in education"
 						:key="`edu-${i}`"
-						:time="item.time"
-						:title="item.title"
-						:course="item.course"
-						:points="item.points"
-						:tags="item.tags" />
+						v-bind="item" />
 				</div>
 
 				<!-- Professional -->
 				<div
-					class="tab-pane fade"
+					class="tab-pane show"
 					id="professional-pane"
 					role="tabpanel"
 					aria-labelledby="professional-tab"
-					tabindex="0">
+					v-else>
 					<ExpCard
 						v-for="(item, i) in professional"
 						:key="`pro-${i}`"
-						:time="item.time"
-						:title="item.title"
-						:course="item.course"
-						:points="item.points"
-						:tags="item.tags" />
+						v-bind="item" />
 				</div>
 			</div>
 		</div>
@@ -74,7 +66,32 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import ExpCard from '@/components/ExpCard.vue'
+
+type TabKey = 'education' | 'professional'
+const activeTab = ref<TabKey>('education')
+
+/**
+ * Sync activeTab with Bootstrap's tab events so only the active pane is mounted.
+ * This cuts DOM/compute roughly in half when lists are large.
+ */
+let handler: ((e: Event) => void) | null = null
+onMounted(() => {
+	const tabsEl = document.getElementById('exp-tabs')
+	handler = (e: Event) => {
+		const target = e.target as HTMLElement | null
+		const dest = target?.getAttribute?.('data-bs-target')
+		activeTab.value = dest === '#professional-pane' ? 'professional' : 'education'
+	}
+	// Bootstrap dispatches 'shown.bs.tab' from the button that just became active
+	tabsEl?.addEventListener('shown.bs.tab', handler as EventListener)
+})
+
+onBeforeUnmount(() => {
+	const tabsEl = document.getElementById('exp-tabs')
+	if (handler) tabsEl?.removeEventListener('shown.bs.tab', handler as EventListener)
+})
 
 type ExpItem = {
 	time: string
@@ -133,7 +150,7 @@ const professional: ExpItem[] = [
 		course: 'Web Development Department',
 		points: [
 			'Developed Trigénius Website',
-			'Helped design team make decisions',
+			'Helped design team make decisions'
 		],
 		tags: ['HTML', 'CSS', 'JavaScript', 'Laravel', 'PyroCMS', 'Twig', 'JQuery', 'MySQL', 'Prestashop']
 	}
