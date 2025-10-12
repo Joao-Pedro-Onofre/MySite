@@ -705,6 +705,9 @@ h1, h2, h3, h4, h5, h6 {
 
 /* mobile tweaks */
 @media (max-width: 767px){
+  .img-frame{
+    margin-top: 30px;
+  }
   .glass-section {
     margin: 30px 10px;
     border-radius: 16px;
@@ -806,4 +809,42 @@ h1, h2, h3, h4, h5, h6 {
 @keyframes modalSlideUp {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Tablet breakpoint (between phone and desktop) ===== */
+/* 768px–1199px: stack cards sooner + hide sidebar nav */
+@media (min-width: 768px) and (max-width: 1199px) {
+
+  .img-frame{
+    margin-top: 30px;
+  }
+  /* Hide the left sidebar/nav on tablet (desktop only) */
+  .main-menu { display: none !important; }
+
+  /* Remove the big left offset used for the desktop sidebar */
+  .glass-section { margin: 40px 20px !important; }
+
+  /* Make project “columns” wrap instead of squeezing */
+  /* If you're using Bootstrap cols inside .projects-section */
+  .projects-section .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;                 /* tidy breathing room */
+  }
+  .projects-section .row > [class*="col-"] {
+    flex: 1 1 360px;           /* min width per card */
+    max-width: 100%;
+  }
+
+  /* Ensure the card itself never stretches oddly */
+  .projects-section .card {
+    height: auto;
+    min-height: 0;
+  }
+
+  /* Keep images crisp and non-deformed (already set, but belt & braces) */
+  .projects-section .card-image { aspect-ratio: 16/9; }
+  .projects-section .card-image img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
 }
